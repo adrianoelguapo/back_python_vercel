@@ -1,14 +1,19 @@
 from flask import Flask, jsonify, request
 from flask_pymongo import PyMongo
+from flask_cors import CORS  # Importar CORS
 from bson import ObjectId
 
 app = Flask(__name__)
 
+# Configurar CORS
+CORS(app)
+
+# Configurar conexión a MongoDB Atlas
 app.config["MONGO_URI"] = "mongodb+srv://admin:123@cluster0.tz018.mongodb.net/despliegue_vercel_express?retryWrites=true&w=majority"
 mongo = PyMongo(app)
 db = mongo.db
 
-@app.route('/api/users', methods = ['GET'])
+@app.route('/api/users', methods=['GET'])
 def get_users():
     users = []
     for user in db.users.find():
@@ -20,7 +25,7 @@ def get_users():
         })
     return jsonify(users)
 
-@app.route('/api/users', methods = ['POST'])
+@app.route('/api/users', methods=['POST'])
 def add_user():
     new_user = request.get_json()
     user_data = {
@@ -32,7 +37,7 @@ def add_user():
     user_data["_id"] = str(user_id)
     return jsonify(user_data), 201
 
-@app.route('/api/users/<string:name>', methods = ['GET'])
+@app.route('/api/users/<string:name>', methods=['GET'])
 def search_user(name):
     try:
         users = db.users.find({"name": name})
@@ -50,7 +55,7 @@ def search_user(name):
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-@app.route('/api/users/<string:id>', methods = ['PUT'])
+@app.route('/api/users/<string:id>', methods=['PUT'])
 def update_user(id):
     try:
         updated_data = request.get_json()
@@ -68,7 +73,7 @@ def update_user(id):
     except:
         return jsonify({"error": "ID inválido"}), 400
 
-@app.route('/api')
+@app.route('/')
 def home():
     return 'Hello, World!'
 
