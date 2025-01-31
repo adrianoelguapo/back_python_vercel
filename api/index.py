@@ -55,24 +55,6 @@ def search_user(name):
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-@app.route('/api/users/<string:id>', methods=['PUT'])
-def update_user(id):
-    try:
-        updated_data = request.get_json()
-        result = db.users.update_one(
-            {"_id": ObjectId(id)},
-            {"$set": {
-                "name": updated_data["name"],
-                "apellido": updated_data["apellido"],
-                "tlf": updated_data["tlf"]
-            }}
-        )
-        if result.matched_count == 0:
-            return jsonify({"error": "Usuario no encontrado"}), 404
-        return jsonify({"message": "Usuario actualizado correctamente"})
-    except:
-        return jsonify({"error": "ID inválido"}), 400
-
 @app.route('/')
 def home():
     return 'Hello, World!'
